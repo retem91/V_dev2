@@ -7,29 +7,14 @@
     android:background="#FFFFFFFF"
     tools:context=".MainFragment">
 
-    <Button
-        android:id="@+id/dbClear"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/ic_baseline_delete_24"
-        android:foreground="@drawable/ic_baseline_delete_24"
-        android:foregroundTint="@color/textonalexa"
-        tools:layout_editor_absoluteX="371dp"
-        tools:layout_editor_absoluteY="5dp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
-        android:scrollbarSize="20dp"
-        android:scrollbarThumbVertical="@android:color/darker_gray"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

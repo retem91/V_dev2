@@ -12,7 +12,7 @@ import android.view.*
 import com.example.v_dev2.VDB.VDB
 import com.example.v_dev2.VDB.stockHistory
 import com.example.v_dev2.VDB.vProfile
-import com.example.v_dev2.databinding.FragmentMainBinding
+import com.example.v_dev2.databinding.FragmentNewsBinding
 import com.example.v_dev2.databinding.ProfileRecyclerBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +22,8 @@ import java.io.InputStreamReader
 import java.net.Socket
 
 
-class MainFragment : Fragment() {
-    lateinit var binding: FragmentMainBinding
+class NewsFragment : Fragment() {
+    lateinit var binding: FragmentNewsBinding
     lateinit var mainActivity: MainActivity
     lateinit var db: VDB
 
@@ -37,13 +37,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        // Inflate the layout for this fragment
-//        binding.dbClear.setOnClickListener{
-//            CoroutineScope(Dispatchers.IO).launch {
-//                db.vDao().deleteall()
-//            }
-//        }
+        binding = FragmentNewsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -51,33 +45,21 @@ class MainFragment : Fragment() {
         super.onViewCreated(view , savedInstanceState)
         db = VDB.getInstance(mainActivity)!!
 
-        //여기에 DB 옵저브 하나 달아서 프로파일DB 만들고 연결하면 순서가 바뀔까?
-        // 아니면 리니어 레이아웃에다가 달면... 프로파일에 새로운 데이터가 들어온걸 시그널 처리할 수 있나?
-        // 라이브 데이터 형식으로 박는게 가장 이상적일거같은데... 밑에 저놈도 결국 라이브데이터라서 된거 아닌가 저걸 라이브데이터를 그 sort로 최근 메시지 도착 시간으로 정렬하면
-        // 항상 최신 데이터가 왼쪽으로 가게 할수있을거같고, 온클릭 리스너 달기도 좋을거같은데?
         db.vDao().chatLiveSelect().observe(viewLifecycleOwner , androidx.lifecycle.Observer {
             var profileList: MutableList<vProfile> = mutableListOf()
             for (profile in it) {
                 profileList.add(0,profile)
             }
-
-            Log.w("profile list",profileList.toString())
-            // 어댑터 따로 빼는건 나중에 성능문제 생기면 하자 귀찮으니까.
-            val customadapter = ProfileListCustomAdapter(profileList , mainActivity, db)
+            val customadapter = NewsListCustomAdapter(profileList , mainActivity, db)
             binding.recyclerView.adapter = customadapter
 
-            // 4. 레이아웃 매니저 설정
             binding.recyclerView.layoutManager = LinearLayoutManager(mainActivity)
             registerForContextMenu(binding.recyclerView)
-            (binding.recyclerView.adapter as NewsListCustomAdapter).notifyDataSetChanged()
-
-//            (binding.recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
-//            binding.recyclerView.scrollToPosition((binding.recyclerView.adapter as ProfileListCustomAdapter).getItemCount() - 1)
         })
     }
 }
 
-class ProfileListCustomAdapter(val listData : MutableList<vProfile>, val mainActivity: MainActivity,val db: VDB) : RecyclerView.Adapter<ProfileListCustomAdapter.Holder>() {
+class NewsListCustomAdapter(val listData : MutableList<vProfile>, val mainActivity: MainActivity, val db: VDB) : RecyclerView.Adapter<NewsListCustomAdapter.Holder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ProfileRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false) // 고정
         return Holder(binding, mainActivity,db)

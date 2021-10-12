@@ -1,19 +1,22 @@
 package com.example.v_dev2.VDB
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import java.sql.Timestamp
 
 @Dao
 interface historyDao {
-    @Query("SELECT * FROM stockHistory WHERE name = :name order by date ASC")
-    fun getAll(name: String): MutableList<stockHistory>
+    @Query("SELECT * FROM stockHistory WHERE code = :code order by date DESC") // use LIKE to get todays data only
+    fun historyLiveSelect(code: String) : LiveData<MutableList<stockHistory>>
+
+    @Query("SELECT * FROM stockHistory WHERE code = :code order by date DESC")
+    fun getAll(code: String): MutableList<stockHistory>
 
     @Insert
     fun insertAll(vararg users: stockHistory)
+
+    @Query("DELETE FROM stockHistory WHERE code = :code")
+    fun deleteall(code: String)
 }
 
 
@@ -24,7 +27,7 @@ interface vDao {
     fun chatLiveSelect() : LiveData<MutableList<vProfile>>
 
     @Query("SELECT * FROM vTable")
-    fun getAll(): List<vProfile>
+    fun getAll(): MutableList<vProfile>
 
     @Query("UPDATE vTable SET vName = :vName, vTheme = :vTheme, themeRank = :themeRank, vtime = :vtime WHERE id = :id")
     fun updatev(vName:String, vTheme:String, themeRank:Int, vtime: String, id: Int)
@@ -46,4 +49,22 @@ interface vDao {
 
     @Query("DELETE FROM vTable")
     fun deleteall()
+}
+
+@Dao
+interface rankDao {
+    @Query("SELECT * FROM rank WHERE rankType = :rankType order by rank ASC") // use LIKE to get todays data only
+    fun rankLiveSelect(rankType: String) : LiveData<MutableList<rank>>
+
+    @Query("SELECT * FROM rank")
+    fun getAll(): MutableList<rank>
+//
+//    @Query("UPDATE rank SET rankName = :rankName, nameList = :nameList, valueList = :valueList WHERE id = 0")
+//    fun updateRank(rankName:String, nameList:String, valueList:String)
+
+    @Update
+    fun update(rankList: MutableList<rank>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(rankList: MutableList<rank>)
 }

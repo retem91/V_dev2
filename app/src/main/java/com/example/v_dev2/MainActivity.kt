@@ -23,11 +23,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
         db = VDB.getInstance(this)!!
         setContentView(binding.root)
+        with(binding){
+            homeButton.setOnClickListener{
+                setFragment()
+            }
+            configButton.setOnClickListener{
+                goSetting()
+            }
+            rankButton.setOnClickListener{
+                goRank()
+            }
+        }
 
         val isNotificationAllowed = NotificationManagerCompat.from(this).areNotificationsEnabled()
         if (!isNotificationAllowed) {
@@ -52,12 +60,12 @@ class MainActivity : AppCompatActivity() {
                 goViProfile(viName, viTime)
             }
         }
-        serviceStart()
+        serviceStart("subscribe")
     }
 
-    fun goViProfile(viName: String, viTime: String) {
+    fun goViProfile(viCode: String, viTime: String) {
         val bundle = Bundle()
-        bundle.putString("viName", viName)
+        bundle.putString("viCode", viCode)
         bundle.putString("viTime", viTime)
         //1. 사용할 프래그먼트 생성
         val chatFragment = ProfileFragment()
@@ -67,13 +75,34 @@ class MainActivity : AppCompatActivity() {
         //3. 트랜젝션을 통해 프래그먼트 삽입
         transaction.setCustomAnimations(R.anim.slide_in,R.anim.fade_out,R.anim.fade_in,R.anim.slide_out)
         transaction.replace(R.id.frameLayout1,chatFragment)
-
         transaction.addToBackStack("settings")
 //        frameLayout.removeAllViews()
         transaction.commit()
     }
 
     fun setFragment(){
+        val mainFragment = MainFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(R.anim.fade_in,R.anim.slide_out,R.anim.slide_in,R.anim.fade_out)
+        transaction.replace(R.id.frameLayout1,mainFragment)
+        transaction.commit()
+    }
+    fun goNews(){
+        val rankFragment = RankFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(R.anim.fade_in,R.anim.slide_out,R.anim.slide_in,R.anim.fade_out)
+        transaction.replace(R.id.frameLayout1,rankFragment)
+        transaction.commit()
+    }
+    fun goRank(){
+        val rankFragment = RankFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(R.anim.fade_in,R.anim.slide_out,R.anim.slide_in,R.anim.fade_out)
+        transaction.replace(R.id.frameLayout1,rankFragment)
+        transaction.commit()
+    }
+
+    fun goSetting(){
         //1. 사용할 프래그먼트 생성
         val mainFragment = MainFragment()
         //2. 트랜젝션 설정
@@ -85,13 +114,30 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun serviceStart(){
+    fun serviceStart(req: String?){
         val intent = Intent(this,ForeDataReciever::class.java)
+        if (req != null)
+            intent.putExtra("req",req)
         ContextCompat.startForegroundService(this,intent)
     }
 
     fun serviceStop(){
         val intent = Intent(this,ForeDataReciever::class.java)
         stopService(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceStart("unsubscribe")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        serviceStart("subscribe")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        serviceStart("unsubscribe")
     }
 }

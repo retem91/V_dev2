@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:backgroundTint="@color/white"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
 
     <LinearLayout
@@ -52,30 +50,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/homeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@color/alexa"
             android:drawableTop="@drawable/ic_home_black_24dp"
-            android:text="V Home"
+            android:text="Home"
             android:textColor="@color/textonalexa" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/newsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@color/alexa"
-            android:drawableTop="@drawable/ic_dashboard_black_24dp"
-            android:text="Map"
+            android:drawableTop="@drawable/ic_baseline_article_24"
+            android:drawableTint="@color/black"
+            android:text="News"
             android:textColor="@color/textonalexa" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/rankButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/alexa"
+            android:drawableTop="@drawable/ic_baseline_stacked_bar_chart_24"
+            android:drawableTint="@color/black"
+            android:text="$ Flow"
+            android:textColor="@color/textonalexa" />
+
+        <Button
+            android:id="@+id/configButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
